@@ -26,6 +26,5 @@ class Map():
             for j in range(len(self.locations[i])):
                 if self.locations[i][j]==1:
                     self.allowed_locations.append((i,j))
-        print(self.allowed_locations)
         return self.allowed_locations
 

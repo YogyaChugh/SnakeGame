@@ -40,7 +40,6 @@ def diff_tuples(a,b):
         raise ValueError("Differentiating tuples are not having any value in common")
     return None
 
-#Class representing each
 class Snake:
     """Class representing a snake on a particular map ! Requires a map object to be linked !\n
     Has the following functions:-\n
@@ -175,31 +174,49 @@ class Snake:
         return True
 
     def move(self):
-        if not self.move_allowed:
+        """Moves the snake by 1 position and calls the check() function to verify if its possible"""
+        if not self.move_allowed or self.locations[0] == None: #In case snake is in diallowed blocks
             print("Move Restricted")
             return None
-        self.locations[0] = add_tuples(self.locations[0],self.direction_pt)
+        self.locations[0] = add_tuples(self.locations[0],self.direction_pt) #Updates the head position
+
+        #When 0th index of last breakpoint and tail are same, update the tail accordingly
         if (self.locations[-1][0] == self.locations[-2][0]):
+            #If the snake tail is on right of the breakpoint, so subtract 1 from tail acc to game coordinate system
             if (self.locations[-1][1]>self.locations[-2][1]):
                 self.locations[-1] = add_tuples(self.locations[-1],(0,-1))
+            #Vice Versa
             else:
                 self.locations[-1] = add_tuples(self.locations[-1],(0,1))
+        #When 1st index is same
         elif (self.locations[-1][1] == self.locations[-2][1]):
             if (self.locations[-1][0]>self.locations[-2][0]):
                 self.locations[-1] = add_tuples(self.locations[-1],(-1,0))
             else:
                 self.locations[-1] = add_tuples(self.locations[-1],(1,0))
+        #Doesn't happen cause of code in get_snakepos_random but just for the sake of precaution
         else:
             raise ValueError("Two adjacent breakpoints don't have anything in common")
+
+        #What if after the above code, the tail reaches the breakpoint location, then just let one live :)
         if self.locations[-1]==self.locations[-2]:
             self.locations.pop(-1)
+
+        #Check if the snake has crossed its limits
         self.check()
 
     def check(self):
+        """Checks whether the snake is in disallowed blocks and sets the self.move_allowed accordingly as well
+        as setting the self.locations to all None"""
         for i in self.locations:
+            #If either in disallowed locations or touches its own body
             if (i not in self.map.get_allowed_locations()) or (self.locations.count(i)>1):
                 print("Game Over !")
                 self.move_allowed = False
+                #Set its own locations to None
+                for i in range(len(self.locations)):
+                    self.locations[i] = None
+                return
 
 new_map = maps.Map("saved_maps/default_map.json")
 bb = Snake(20,new_map)

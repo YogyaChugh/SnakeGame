@@ -3,42 +3,55 @@
 NOTE: Any file stored on disk (snake_game) is encrypted by default"""
 from sys import exception
 import os.path,warnings
+from cryptography.fernet import Fernet
 
-def encrypt_decrypt(location,special_key,e_d="e"):
-    """Encrypts/decrypts a particular file/string and returns the string containing its content
-    based on the secret key passed as the second argument! Note 3rd argument to be either 'e' or 'd'
-    NOTE: Max length of secret_key to be 5"""
+def encrypt(location):
+    """Encrypts a particular file/string and returns the key which can be used to retrieve the data!"""
 
     #Input checking
     if not isinstance(location,str):
         raise ValueError("Please pass a string to the file location! Type passed: ",type(location))
-    if len(str(special_key))>5:
-        raise ValueError("Special key can't be more than 5 digits ! Current length: ",len(special_key))
-    if not isinstance(special_key,int):
-        raise ValueError("Special key passed is of wrong type ! Current type: ",type(str))
-    if e_d != "e" and e_d != "d":
-        raise ValueError("Unintended value passed for encrypt/decrypt ! e_d value: ",e_d)
     if os.path.isfile(location):
-        with open(location, "r") as file:
+        with open(location, "r",encoding="utf-8") as file:
             data = file.read()
     else:
         warnings.warn("String supplied isn't a file ! Further processing it as the encryption/decryption string")
         data = location
 
     #Main Logic
-    new=""
-    for i in range(len(data)):
-        temp = ord(data[i])
-        if e_d=="e":
-            temp+=special_key
-        elif e_d=="d":
-            temp-=special_key
-        new += chr(temp)
-    return new
+    key = Fernet.generate_key()
+    temp = Fernet(key)
+    token = temp.encrypt(data.encode())
+    return (key,token)
+
+def decrypt(location,key):
+    """Decrypts a particular file/string and returns the decrypted data!"""
+
+    #Input checking
+    if not isinstance(location,str):
+        raise ValueError("Please pass a string to the file location! Type passed: ",type(location))
+    if not isinstance(key,bytes):
+        raise ValueError("Please pass bytes to the file location! Type passed: ",type(key))
+    if os.path.isfile(location):
+        with open(location, "r",encoding="utf-8") as file:
+            data = file.read()
+    else:
+        warnings.warn("String supplied isn't a file ! Further processing it as the encryption/decryption string")
+        data = location
+
+    #Main Logic
+    temp_dude = Fernet(key)
+    print(temp_dude)
+    data_work = temp_dude.decrypt(data).decode()
+    return data_work
+
 
 if __name__ == "__main__":
     #Trial code ! Remove later
-    a = encrypt_decrypt("C:\\Users\\Lenovo\\OneDrive\\Desktop\\Snake_Game\\src\\Maps\\saved_maps.json",33433)
+    a = encrypt("C:\\Users\\Lenovo\\OneDrive\\Desktop\\Snake_Game\\src\\Snake\\saved_snakes.json")
     print(a)
-    print(encrypt_decrypt(a,33433,'d'))
+    with open("C:\\Users\\Lenovo\\OneDrive\\Desktop\\Snake_Game\\src\\Snake\\saved_snakes.json",'w') as file:
+        file.write(a[1].decode())
+    b = decrypt("C:\\Users\\Lenovo\\OneDrive\\Desktop\\Snake_Game\\src\\Snake\\saved_snakes.json",a[0])
+    print(b)
 

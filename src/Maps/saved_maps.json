@@ -18,10 +18,10 @@
     "total_width_px": 300,
     "cell_size_px": 30,
     "allowed_blocks": [
-      [1,"map_01/wooden_block.png"]
+      [1,"graphics/map_01/wooden_block.png"]
     ],
     "disallowed_blocks": [
-      [0,"mden_dark_blocap_01/wook.png"]
+      [0,"graphics/map_01/wooden_dark_block.png"]
     ]
   }
 }

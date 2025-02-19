@@ -19,14 +19,10 @@ class Map:
             self.data = json.load(file)
         if self.data=={}:
             raise ValueError("Data File is empty !")
-        print(self.data)
-        print(type(self.data))
-        print(repr(list(self.data.keys())))
-        if "Map_01" in self.data:
-            print("Key exists!")
-            self.data = self.data["Map_01"]
+        if map_type in self.data:
+            self.data = self.data[map_type]
         else:
-            print("Key is missing. Available keys:", self.data.keys())
+            raise ValueError("Key is missing. Available keys:", self.data.keys())
         if self.data=={}:
             raise ValueError("Data File set is empty !")
 

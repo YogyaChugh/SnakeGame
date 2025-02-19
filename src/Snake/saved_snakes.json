@@ -1,9 +1,8 @@
 {
-  "Snake_01":   {
-    "Name": "Water waffle",
+  "Snake_01": {
+    "Name": "Blue Woody",
     "length": 3,
     "snake_graphics": "graphics/snake_01",
-    "color_encodings": [null]
+    "color_encodings": ["blue"]
   }
 }
-

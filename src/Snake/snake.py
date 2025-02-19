@@ -14,10 +14,12 @@ from src.base import *
 #Dictionary + List storing directions possible
 directions_dict = {"LEFT":(0,-1),"RIGHT":(0,1),"UP":(-1,0),"DOWN":(1,0)}
 directions_list = ["LEFT","RIGHT","UP","DOWN"]
+the_saved_snakes_file = os.path.join(os.path.abspath(os.path.dirname(__file__)),"saved_snakes.json")
 
 class GameOver(Exception):
-    def __init__(self):
-        super.__init__()
+    def __init__(self,message="Game's Over"):
+        self.message = message
+        super().__init__(self.message)
 
 class Snake:
     """Class representing a snake on a particular map ! Requires a map object to be linked !\n
@@ -34,11 +36,12 @@ class Snake:
             raise ValueError("Should supply a Map object !\n Current Type: ",type(map_for_snake))
         if not isinstance(snake_type,str):
             raise ValueError("File type shared for snake is invalid !\n Current Type: ",type(snake_type))
-        if not os.path.isfile("saved_snakes.json"):
+        if not os.path.isfile(the_saved_snakes_file):
             raise ValueError("Saved snakes file either moved or renamed ! Update Code !")
 
-        with open("saved_snakes.json") as file:
+        with open(the_saved_snakes_file) as file:
             data = json.load(file)
+        print(data)
         if data=={}:
             raise ValueError("Snake File Data not found !")
         data = data[snake_type]
@@ -75,9 +78,6 @@ class Snake:
             return ValueError("Current location tuple is incorrect !\n Current Location: ",current_location)
         if not all(isinstance(temp_var,int) for temp_var in current_location) and not all(isinstance(temp_var2,float) for temp_var2 in current_location):
             return ValueError("Current location has values of type other than ",type(int),"/",type(float))
-        for another_temp in ftemporary:
-            if not all(isinstance(temp_var, int) for temp_var in ftemporary) and not all(isinstance(temp_var2, float) for temp_var2 in ftemporary):
-                return ValueError("Possible values list has values of type other than ", type(int),"/",type(float))
         if not isinstance(ftemporary,list):
             return ValueError("Possible values need to be in form of a list !\n Current type: ",type(ftemporary))
         if not ftemporary:
@@ -225,14 +225,15 @@ class Snake:
                     self.locations[j] = None
                 raise GameOver
 
-new_map = maps.Map("Map_01")
-bb = Snake("Snake_01",new_map)
-print("Snake locations: ",bb.locations)
-bb.move()
-print("New Snake locations: ",bb.locations)
-bb.move()
-print("New Snake locations: ",bb.locations)
-bb.move()
-print("New Snake locations: ",bb.locations)
-bb.move()
-print("New Snake locations: ",bb.locations)
+if __name__ == "__main__":
+    new_map = maps.Map("Map_01")
+    bb = Snake("Snake_01",new_map)
+    print("Snake locations: ",bb.locations)
+    bb.move()
+    print("New Snake locations: ",bb.locations)
+    bb.move()
+    print("New Snake locations: ",bb.locations)
+    bb.move()
+    print("New Snake locations: ",bb.locations)
+    bb.move()
+    print("New Snake locations: ",bb.locations)

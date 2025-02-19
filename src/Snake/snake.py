@@ -1,44 +1,23 @@
+"""This file consists of the Snake class responsible for creating snake object"""
+
 #Add upper directory path
 import sys,os
 paths = os.path.abspath(os.path.join(os.path.dirname(__file__),"../../"))
 sys.path.insert(0,paths)
-defaults_path = os.path.join(paths,"defaults/snake.json")
 
 
 #Other important imports
-import json,random,math
+import json,random
 from src.Maps import maps #Importing the Map class from maps.py
+from src.base import *
 
 #Dictionary + List storing directions possible
 directions_dict = {"LEFT":(0,-1),"RIGHT":(0,1),"UP":(-1,0),"DOWN":(1,0)}
 directions_list = ["LEFT","RIGHT","UP","DOWN"]
 
-
-#Just adds 2 tuples dude
-def add_tuples(a,b):
-    c = []
-    for i in range(len(a)):
-        c.append(a[i] + b[i])
-    return tuple(c)
-
-
-#Multiplies the tuple a with number b
-def mul_tuple(a,b):
-    a = list(a)
-    for i in range(len(a)):
-        a[i]=int(a[i]*b)
-    return tuple(a)
-
-
-#Gets difference between 2 tuples but note that they should have either same row or same column
-def diff_tuples(a,b):
-    if a[0]==b[0]:
-        return math.fabs(b[1] - a[1])
-    elif a[1]==b[1]:
-        return math.fabs(b[0] - a[0])
-    else:
-        raise ValueError("Differentiating tuples are not having any value in common")
-    return None
+class GameOver(Exception):
+    def __init__(self):
+        super.__init__()
 
 class Snake:
     """Class representing a snake on a particular map ! Requires a map object to be linked !\n
@@ -47,24 +26,64 @@ class Snake:
     2)get_snakepos_random() - Requires a map object and fills the location list with a random snake position on the map\n
     3)move() - Moves the snake by 1 position\n
     4)check() - Checks if the snake is in disallowed sections(its own body or the border/restricted blocks)"""
-    def __init__(self,snake_length,map):
+    def __init__(self,snake_type,map_for_snake):
         #Checks if map is an object of Map class
-        if not isinstance(map,maps.Map):
-            raise TypeError("Should supply a Map object :)")
 
+        #Input checking
+        if not isinstance(map_for_snake,maps.Map):
+            raise ValueError("Should supply a Map object !\n Current Type: ",type(map_for_snake))
+        if not isinstance(snake_type,str):
+            raise ValueError("File type shared for snake is invalid !\n Current Type: ",type(snake_type))
+        if not os.path.isfile("saved_snakes.json"):
+            raise ValueError("Saved snakes file either moved or renamed ! Update Code !")
+
+        with open("saved_snakes.json") as file:
+            data = json.load(file)
+        if data=={}:
+            raise ValueError("Snake File Data not found !")
+        data = data[snake_type]
+        if data=={}:
+            raise ValueError("Snake Data not found ! Data list empty !")
+
+        #check_snake_json(data)
+
+        #Data from saved_snakes.json
+        self.snake_type = snake_type
+        self.name = data["Name"]
+        self.graphics_location = data["snake_graphics"]
+        self.color_encodings = data["color_encodings"]
+        self.length = data["length"]
+
+        #Other data
         self.move_allowed = True
-        self.map = map
-        self.length = int(snake_length)
+        self.map = map_for_snake
         self.locations = [] #Stores the beginning,end and breakpoints of the snake's body,i.e. (2,3),(2,1)
         self.direction = None
         self.direction_pt = None
         self.keep_track_length = 0
-        a = self.get_snakepos_random() #Initialize location of snake on map
-        if a!=True:
-            print(a)
 
-    def fetch_direction(self,current_location,ftemporary):
+        self.get_snakepos_random() #Initialize location of snake on map
+
+    @staticmethod
+    def fetch_direction(current_location, ftemporary):
         """Requires a list of locations from which it chooses randomly and returns the direction for the snake"""
+
+        #Input checking
+        if not isinstance(current_location,tuple):
+            return ValueError("Current location needs to be a tuple !\n Current type: ",type(current_location))
+        if len(current_location) not in range(0,3):
+            return ValueError("Current location tuple is incorrect !\n Current Location: ",current_location)
+        if not all(isinstance(temp_var,int) for temp_var in current_location) and not all(isinstance(temp_var2,float) for temp_var2 in current_location):
+            return ValueError("Current location has values of type other than ",type(int),"/",type(float))
+        for another_temp in ftemporary:
+            if not all(isinstance(temp_var, int) for temp_var in ftemporary) and not all(isinstance(temp_var2, float) for temp_var2 in ftemporary):
+                return ValueError("Possible values list has values of type other than ", type(int),"/",type(float))
+        if not isinstance(ftemporary,list):
+            return ValueError("Possible values need to be in form of a list !\n Current type: ",type(ftemporary))
+        if not ftemporary:
+            return ValueError("Possible value list is empty !")
+
+        #Main Logic
         chosen_block = random.choice(ftemporary)
         if chosen_block == add_tuples(current_location,directions_dict["DOWN"]):
             return directions_list[2] #Returns "UP" opposite
@@ -75,30 +94,25 @@ class Snake:
         elif chosen_block == add_tuples(current_location,directions_dict["RIGHT"]):
             return directions_list[0] #Returns "LEFT"
         else:
-            raise ValueError("Couldn't find snake object direction !") #JUST IN CASE
-            return None
+            raise ValueError("Couldn't find snake object direction ! \nChosen Block: ",chosen_block) #JUST IN CASE
 
     def get_snakepos_random(self):
         """Randomly assigns location to the snake ! Called during initialization of the game"""
 
         #Checks if map is an object of Map class
         if not isinstance(self.map,maps.Map):
-            raise TypeError("Should supply a Map object :)")
-            return None
+            raise TypeError("Should supply a Map object ! \nCurrent Type: ",type(self.map))
 
         #Member function of map for getting allowed locations in the form of (1,2) (row, column)
         allowed_locations = self.map.get_allowed_locations()
         if len(allowed_locations)<1:
-            raise ValueError("Map data incorrectly supplied")
-            return None
+            raise ValueError("Map data incorrectly supplied !\nlen(locations allowed) :",len(allowed_locations))
 
         #Just to store where the last breakpoint(could be head) points to
-        temp_direction = None
         temp_direction_pt = None
 
         if self.length<3:
-            raise ValueError("Minimum length for the snake is 3 blocks !")
-            return None
+            raise ValueError("Minimum length for the snake is 3 blocks !\n Current Length: ",self.length)
 
         #Loops for every body part of snake
         for i in range(self.length):
@@ -108,11 +122,10 @@ class Snake:
                 ftemp = [] #Stores temporary possible locations
                 max_tries = 10 #Just to prevent infinite loop
                 trial = 0
-                while (len(ftemp)<3):
+                while len(ftemp)<3:
                     trial+=1
                     if trial>max_tries:
-                        raise OverflowError("Taking too long to find perfect location on map for spawning snake ")
-                        return None
+                        raise OverflowError("Taking too long to find perfect location on map for spawning snake !\n Tried ",trial," times")
 
                     #Reset in case loop continues
                     self.locations = []
@@ -122,30 +135,26 @@ class Snake:
                     ftemp = [add_tuples(self.locations[0],(1,0)),add_tuples(self.locations[0],(0,1)),add_tuples(self.locations[0],(-1,0)),add_tuples(self.locations[0],(0,-1))]
                     ftemp = [a for a in ftemp if a in allowed_locations] #Stores allowed locations (max:4)
                     #Now ftemp has locations of all 4 directions that are allowed on the map passed to the Snake object
-                if ftemp==[]:
+                if not ftemp:
                     raise ValueError("Couldn't find matching allowed locations on the map for the snake to spawn")
-                    return None
 
                 #This line is to eliminate the locations whose opposite isn't present ! like remove the UP location if DOWN isn't there
                 #It is done to ensure that the snake has scope of movement in both directions
                 ftemp = [c for c in ftemp if add_tuples(c,(2,0)) in ftemp or add_tuples(c,(-2,0)) in ftemp or add_tuples(c,(0,2)) in ftemp or add_tuples(c,(0,-2)) in ftemp]
                 if len(ftemp)<2: #Just in Case there is none (0% chances though cause of above loop)
-                    raise ValueError("Final Temporary list got less expected values for spawning positions")
-                    return None
+                    raise ValueError("Final Temporary list got less expected values for spawning positions !\nValues: ",ftemp)
 
                 #Fetching direction and also the points to be added later
-                temp_direction = self.direction = self.fetch_direction(self.locations[0],ftemp)
-                if self.direction == None:
+                self.direction = self.fetch_direction(self.locations[0],ftemp)
+                if not self.direction:
                     raise ValueError("Direction can't be None ! fetch_direction() returned None")
-                    return None
                 temp_direction_pt = self.direction_pt = directions_dict[self.direction]
 
                 #These temp direction ones will be used later in order to remember the direction of the last stored breakpoint
             else:
                 #Just in Case
-                if self.direction == None:
+                if not self.direction:
                     raise ValueError("No direction for the snake :)")
-                    return None
 
                 #The next position to suspect based on the temporary direction of last breakpoint
                 next_pos = add_tuples(self.locations[-1],mul_tuple(temp_direction_pt,-(i - self.keep_track_length)))
@@ -171,32 +180,31 @@ class Snake:
                     #Store the direction and direction_pt for this breakpoint
                     temp_direction = self.fetch_direction(current_pos,temp_nextpos_possible)
                     temp_direction_pt = directions_dict[temp_direction]
-        return True
 
     def move(self):
-        """Moves the snake by 1 position and calls the check() function to verify if its possible"""
-        if not self.move_allowed or self.locations[0] == None: #In case snake is in diallowed blocks
+        """Moves the snake by 1 position and calls the check() function to verify if it's possible"""
+        if not self.move_allowed or not self.locations[0]: #In case snake is in diallowed blocks
             print("Move Restricted")
             return None
         self.locations[0] = add_tuples(self.locations[0],self.direction_pt) #Updates the head position
 
         #When 0th index of last breakpoint and tail are same, update the tail accordingly
-        if (self.locations[-1][0] == self.locations[-2][0]):
+        if self.locations[-1][0] == self.locations[-2][0]:
             #If the snake tail is on right of the breakpoint, so subtract 1 from tail acc to game coordinate system
-            if (self.locations[-1][1]>self.locations[-2][1]):
+            if self.locations[-1][1]>self.locations[-2][1]:
                 self.locations[-1] = add_tuples(self.locations[-1],(0,-1))
             #Vice Versa
             else:
                 self.locations[-1] = add_tuples(self.locations[-1],(0,1))
         #When 1st index is same
-        elif (self.locations[-1][1] == self.locations[-2][1]):
-            if (self.locations[-1][0]>self.locations[-2][0]):
+        elif self.locations[-1][1] == self.locations[-2][1]:
+            if self.locations[-1][0]>self.locations[-2][0]:
                 self.locations[-1] = add_tuples(self.locations[-1],(-1,0))
             else:
                 self.locations[-1] = add_tuples(self.locations[-1],(1,0))
         #Doesn't happen cause of code in get_snakepos_random but just for the sake of precaution
         else:
-            raise ValueError("Two adjacent breakpoints don't have anything in common")
+            raise ValueError("Two adjacent breakpoints don't have anything in common !\nBreakpoints: ",self.locations[-1],",",self.locations[-2])
 
         #What if after the above code, the tail reaches the breakpoint location, then just let one live :)
         if self.locations[-1]==self.locations[-2]:
@@ -211,15 +219,14 @@ class Snake:
         for i in self.locations:
             #If either in disallowed locations or touches its own body
             if (i not in self.map.get_allowed_locations()) or (self.locations.count(i)>1):
-                print("Game Over !")
                 self.move_allowed = False
                 #Set its own locations to None
-                for i in range(len(self.locations)):
-                    self.locations[i] = None
-                return
+                for j in range(len(self.locations)):
+                    self.locations[j] = None
+                raise GameOver
 
-new_map = maps.Map("saved_maps/default_map.json")
-bb = Snake(20,new_map)
+new_map = maps.Map("Map_01")
+bb = Snake("Snake_01",new_map)
 print("Snake locations: ",bb.locations)
 bb.move()
 print("New Snake locations: ",bb.locations)

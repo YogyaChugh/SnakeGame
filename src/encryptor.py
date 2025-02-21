@@ -14,12 +14,12 @@ done = 0
 if not getattr(sys,"frozen",False):
     paths = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
     sys.path.insert(0, paths)
-    temp = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
+    temp = paths
 else:
     paths = ""
     temp = os.path.dirname(__file__)
 
-key_set = Fernet.generate_key()
+key_set = ""
 
 supported_extensions = [".png",".jpg",".jpeg",".ico",".icon",".json"]
 disallowed = [".idea","snake_game","Snake_Game.iml","Compiling Game.run.xml","Running_Game.run.xml",".git","requirements.txt","__pycache__"]
@@ -49,6 +49,7 @@ def encrypt(location,key):
 
     #Main Logic (Just Yogya knows)
     #Works with double encryption
+    key = str(key)[2:-1].encode("utf-8")
     temp = Fernet(key)
     try:
         if not isinstance(data,bytes):
@@ -83,8 +84,8 @@ def decrypt(location,key):
     #Input checking
     if not isinstance(location,str):
         raise ValueError("Please pass a string to the file location! Type passed: ",type(location))
-    if not isinstance(key,bytes):
-        raise ValueError("Please pass bytes to the file location! Type passed: ",type(key))
+    if not isinstance(key,str):
+        raise ValueError("Please pass string to the file location! Type passed: ",type(key))
     if os.path.isfile(location):
         if os.path.splitext(location)[1] in [".ico",".icon",".png",".jpeg",".jpg"]:
             temp_image = Image.open(location)
@@ -97,12 +98,12 @@ def decrypt(location,key):
         data = location
 
     #Main Logic
+    key = key[2:-2].encode("utf-8")
     temp_usage = Fernet(key)
     data = str(data)    #Just in case
     #If user sent without converting to string
     if data[0]=="b" and ((data[1]== "\"" and data[-1]=="\"") or (data[1]== "'" and data[-1]=="'")):
         data = data[2:-1]
-
     #If file already encrypted
     if data[0]!="e":
         raise ValueError("File is already decrypted !")
@@ -114,9 +115,10 @@ def decrypt(location,key):
     for i in range(len(data)):  #Add real data to new_data
         if i%(mega+1)!=0:
             new_data += data[i]
-    new_data.encode()
+    new_data = new_data.encode("utf-8")
+    print(new_data)
     try:
-        data_work = temp_usage.decrypt(new_data).decode() #Decrypt
+        data_work = temp_usage.decrypt(new_data) #Decrypt
     except TypeError as e:
         raise EncryptionError("File Decryption failed !")
     except InvalidToken as d:
@@ -127,8 +129,9 @@ def decrypt(location,key):
 
 def fetch_key():
     """Used to fetch the key from the encrypted pdf"""
-    reader = PdfReader("src/Encrypted_key.pdf")
+    reader = PdfReader(os.path.join(paths,"Encrypted_key.pdf"))
     reader.decrypt("snake_game_op_context_is_just_secret2133")
+    print(reader.pages[0].extract_text())
     return str(reader.pages[0].extract_text())
 
 
@@ -159,7 +162,7 @@ def encrypt_pdf():
 #Recursive Function
 def encrypt_files(file_or_dir):
     """Recurse through directories, encrypting allowed files"""
-    global done,disallowed
+    global done,disallowed,key_set
     done+=1
     if done>300: #What if overflow
         done = 0
@@ -167,7 +170,9 @@ def encrypt_files(file_or_dir):
     if os.path.isfile(file_or_dir): #If its a file dude
         filename,filename_extension = os.path.splitext(file_or_dir)
         if filename_extension in supported_extensions: #Only if allowed
-            print(encrypt(os.path.abspath(file_or_dir),key_set))
+            temp_encrypted_token = encrypt(os.path.abspath(file_or_dir),key_set)
+            with open(os.path.abspath(file_or_dir),"w") as f:
+                f.write(str(temp_encrypted_token))
         else:
             pass
     elif os.path.isdir(file_or_dir): #If its dir, loop through it
@@ -179,7 +184,15 @@ def encrypt_files(file_or_dir):
         pass
 
 def start_encrypting():
+    with open("sets.txt") as f:
+        datas = f.read()
+    if datas=="True":
+        print("Done already !")
+        return
+    global key_set
+    key_set = Fernet.generate_key()
     """Start encrypting files ! Only at beginning when game is installed"""
+    print(key_set)
     for i in os.listdir(temp):
         print(i)
         if i in disallowed:
@@ -191,3 +204,5 @@ def start_encrypting():
     done = 0
     create_pdf(key_set)
     encrypt_pdf()
+    with open("sets.txt","w") as f:
+        f.write("True")

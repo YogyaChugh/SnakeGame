@@ -21,13 +21,14 @@ class Map:
         #Input checking
         if not isinstance(map_type,str):
             raise ValueError("Value must be a string! \nCurrent type: ",type(map_type))
-        if not os.path.isfile(os.path.join(paths,"saved_maps.json")):
+        if not os.path.isfile(os.path.join(paths,"saved_stuff/saved_maps.json")):
             raise FileNotFoundError("File doesn't exist !")
         with open(os.path.join(paths,"saved_stuff/saved_maps.json"),'r') as file:
-            self.data = json.load(file)
+            self.data = file.read()
+        self.data = encryptor.decrypt(self.data, encryptor.fetch_key())
+        self.data = dict(self.data)
         if self.data=={}:
             raise ValueError("Data File is empty !")
-        self.data = encryptor.decrypt(self.data,key)
         if map_type in self.data:
             self.data = self.data[map_type]
         else:

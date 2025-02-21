@@ -45,10 +45,8 @@ class Snake:
             raise ValueError("Saved snakes file either moved or renamed ! Update Code !")
 
         with open(os.path.join(paths,"saved_stuff\saved_snakes.json")) as file:
-            data = json.load(file)
-        if data=={}:
-            raise ValueError("Snake File Data not found !")
-        data = dict(str(encryptor.decrypt(data,key)))
+            data = file.read()
+        data = dict(str(encryptor.decrypt(data,encryptor.fetch_key())))
         data = data[snake_type]
         if data=={}:
             raise ValueError("Snake Data not found ! Data list empty !")

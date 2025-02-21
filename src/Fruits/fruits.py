@@ -30,10 +30,11 @@ class Fruits:
 
         #Opens file and checks it
         with open(temp_filepath) as file:
-            self.data = json.load(file)
+            self.data = file.read()
+        self.data = encryptor.decrypt(self.data, encryptor.fetch_key())
+        self.data = dict(self.data)
         if self.data=={}:
             raise ValueError("Data File Empty :)")
-        self.data = encryptor.decrypt(self.data,key)
         if fruit_type in self.data:
             self.data = self.data[fruit_type]
         else:

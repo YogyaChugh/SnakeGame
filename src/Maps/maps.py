@@ -4,7 +4,12 @@
 import json
 import os,sys
 
-locs = os.path.abspath(os.path.dirname(__file__))
+if not getattr(sys,"frozen",False):
+    paths = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+    sys.path.insert(0, paths)
+    paths += os.path.join(paths,"saved_stuff")
+else:
+    paths = ""
 
 class Map:
     """Class Map storing default/saved maps"""
@@ -12,10 +17,10 @@ class Map:
 
         #Input checking
         if not isinstance(map_type,str):
-            raise ValueError("Value must be a string! \nCurrent type: ",type(location))
-        if not os.path.isfile(os.path.join(locs,"saved_maps.json")):
+            raise ValueError("Value must be a string! \nCurrent type: ",type(map_type))
+        if not os.path.isfile(os.path.join(paths,"saved_maps.json")):
             raise FileNotFoundError("File doesn't exist !")
-        with open(os.path.join(locs,"saved_maps.json"),'r') as file:
+        with open(os.path.join(paths,"saved_maps.json"),'r') as file:
             self.data = json.load(file)
         if self.data=={}:
             raise ValueError("Data File is empty !")

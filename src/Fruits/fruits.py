@@ -1,8 +1,13 @@
 """This file defines the Fruits class for spawning fruits on map"""
 
 import os,sys,json, random
-paths = os.path.abspath(os.path.join(os.path.dirname(__file__),"../../"))
-sys.path.insert(0,paths)
+
+if not getattr(sys,"frozen",False):
+    paths = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+    sys.path.insert(0, paths)
+    paths += "saved_stuff"
+else:
+    paths = ""
 
 from src.Maps.maps import Map
 
@@ -16,7 +21,7 @@ class Fruits:
             raise ValueError("Fruits class requires a map object ! \nCurrent Type: ",type(map_set))
         if not isinstance(fruit_type,str):
             raise ValueError("Fruit type should be of str type ! \nCurrent Type: ",type(fruit_type))
-        temp_filepath = os.path.join(paths,"src/Fruits/saved_fruits.json")
+        temp_filepath = os.path.join(paths,"saved_fruits.json")
         if not os.path.isfile(temp_filepath):
             raise FileNotFoundError("Saved Fruits file not found ! It has either been moved/deleted !")
 

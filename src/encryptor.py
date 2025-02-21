@@ -3,6 +3,7 @@
 NOTE: Any file stored on disk (snake_game) is encrypted by default"""
 import os.path,warnings,random
 from cryptography.fernet import Fernet, InvalidToken
+from PIL import Image
 
 
 class EncryptionError(Exception):
@@ -17,8 +18,12 @@ def encrypt(location,key):
     if not isinstance(location,str):
         raise ValueError("Please pass a string to the file location! Type passed: ",type(location))
     if os.path.isfile(location):
-        with open(location, "r",encoding="utf-8") as file:
-            data = file.read()
+        if os.path.splitext(location)[1] in [".ico",".icon",".png",".jpeg",".jpg"]:
+            temp_image = Image.open(location)
+            data = temp_image.tobytes()
+        else:
+            with open(location, "r",encoding="utf-8") as file:
+                data = file.read()
     else:
         warnings.warn("String supplied isn't a file ! Further processing it as the encryption/decryption string")
         data = location
@@ -62,8 +67,12 @@ def decrypt(location,key):
     if not isinstance(key,bytes):
         raise ValueError("Please pass bytes to the file location! Type passed: ",type(key))
     if os.path.isfile(location):
-        with open(location, "r",encoding="utf-8") as file:
-            data = file.read()
+        if os.path.splitext(location)[1] in [".ico",".icon",".png",".jpeg",".jpg"]:
+            temp_image = Image.open(location)
+            data = temp_image.tobytes(encoder_name="utf-8")
+        else:
+            with open(location, "r",encoding="utf-8") as file:
+                data = file.read()
     else:
         warnings.warn("String supplied isn't a file ! Further processing it as the encryption/decryption string")
         data = location

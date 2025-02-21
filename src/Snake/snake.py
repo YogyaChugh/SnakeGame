@@ -2,19 +2,26 @@
 
 #Add upper directory path
 import sys,os
-paths = os.path.abspath(os.path.join(os.path.dirname(__file__),"../../"))
-sys.path.insert(0,paths)
-
+if not getattr(sys,"frozen",False):
+    paths = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+    sys.path.insert(0, paths)
+else:
+    paths = ""
 
 #Other important imports
 import json,random
-from src.Maps import maps #Importing the Map class from maps.py
 from src.base import *
+from src.Maps import maps  # Importing the Map class from maps.py
+from src import encryptor
+from PyPDF2 import PdfReader
+
+reader = PdfReader(os.path.join(paths,"src\Encrypted_key.pdf"))
+for i in reader.pages:
+    reader.read()
 
 #Dictionary + List storing directions possible
 directions_dict = {"LEFT":(0,-1),"RIGHT":(0,1),"UP":(-1,0),"DOWN":(1,0)}
 directions_list = ["LEFT","RIGHT","UP","DOWN"]
-the_saved_snakes_file = os.path.join(os.path.abspath(os.path.dirname(__file__)),"saved_snakes.json")
 
 class GameOver(Exception):
     def __init__(self,message="Game's Over"):
@@ -36,12 +43,11 @@ class Snake:
             raise ValueError("Should supply a Map object !\n Current Type: ",type(map_for_snake))
         if not isinstance(snake_type,str):
             raise ValueError("File type shared for snake is invalid !\n Current Type: ",type(snake_type))
-        if not os.path.isfile(the_saved_snakes_file):
+        if not os.path.isfile(os.path.join(paths,"saved_snakes.json")):
             raise ValueError("Saved snakes file either moved or renamed ! Update Code !")
 
-        with open(the_saved_snakes_file) as file:
+        with open(os.path.join(paths,"saved_stuff\saved_snakes.json")) as file:
             data = json.load(file)
-        print(data)
         if data=={}:
             raise ValueError("Snake File Data not found !")
         data = data[snake_type]

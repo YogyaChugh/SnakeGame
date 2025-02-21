@@ -48,7 +48,7 @@ class Snake:
             data = json.load(file)
         if data=={}:
             raise ValueError("Snake File Data not found !")
-        data = dict(str(encryptor.decrypt(key,data)))
+        data = dict(str(encryptor.decrypt(data,key)))
         data = data[snake_type]
         if data=={}:
             raise ValueError("Snake Data not found ! Data list empty !")

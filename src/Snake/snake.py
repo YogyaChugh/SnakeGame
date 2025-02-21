@@ -15,9 +15,7 @@ from src.Maps import maps  # Importing the Map class from maps.py
 from src import encryptor
 from PyPDF2 import PdfReader
 
-reader = PdfReader(os.path.join(paths,"src\Encrypted_key.pdf"))
-for i in reader.pages:
-    reader.read()
+key = encryptor.fetch_key()
 
 #Dictionary + List storing directions possible
 directions_dict = {"LEFT":(0,-1),"RIGHT":(0,1),"UP":(-1,0),"DOWN":(1,0)}
@@ -50,6 +48,7 @@ class Snake:
             data = json.load(file)
         if data=={}:
             raise ValueError("Snake File Data not found !")
+        data = dict(str(encryptor.decrypt(key,data)))
         data = data[snake_type]
         if data=={}:
             raise ValueError("Snake Data not found ! Data list empty !")

@@ -7,9 +7,10 @@ import os,sys
 if not getattr(sys,"frozen",False):
     paths = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
     sys.path.insert(0, paths)
-    paths += os.path.join(paths,"saved_stuff")
 else:
     paths = ""
+
+import src.encryptor
 
 class Map:
     """Class Map storing default/saved maps"""
@@ -20,10 +21,11 @@ class Map:
             raise ValueError("Value must be a string! \nCurrent type: ",type(map_type))
         if not os.path.isfile(os.path.join(paths,"saved_maps.json")):
             raise FileNotFoundError("File doesn't exist !")
-        with open(os.path.join(paths,"saved_maps.json"),'r') as file:
+        with open(os.path.join(paths,"saved_stuff/saved_maps.json"),'r') as file:
             self.data = json.load(file)
         if self.data=={}:
             raise ValueError("Data File is empty !")
+        self.data = encryptor.decrypt(key,self.data)
         if map_type in self.data:
             self.data = self.data[map_type]
         else:

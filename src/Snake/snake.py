@@ -12,10 +12,8 @@ else:
 import json,random
 from src.base import *
 from src.Maps import maps  # Importing the Map class from maps.py
-from src import encryptor
 from PyPDF2 import PdfReader
 
-key = encryptor.fetch_key()
 
 #Dictionary + List storing directions possible
 directions_dict = {"LEFT":(0,-1),"RIGHT":(0,1),"UP":(-1,0),"DOWN":(1,0)}
@@ -41,12 +39,11 @@ class Snake:
             raise ValueError("Should supply a Map object !\n Current Type: ",type(map_for_snake))
         if not isinstance(snake_type,str):
             raise ValueError("File type shared for snake is invalid !\n Current Type: ",type(snake_type))
-        if not os.path.isfile(os.path.join(paths,"saved_snakes.json")):
+        if not os.path.isfile(os.path.join(paths,"saved_stuff/saved_snakes.json")):
             raise ValueError("Saved snakes file either moved or renamed ! Update Code !")
 
-        with open(os.path.join(paths,"saved_stuff\saved_snakes.json")) as file:
-            data = file.read()
-        data = dict(str(encryptor.decrypt(data,encryptor.fetch_key())))
+        with open(os.path.join(paths,"saved_stuff/saved_snakes.json")) as file:
+            data = json.load(file)
         data = data[snake_type]
         if data=={}:
             raise ValueError("Snake Data not found ! Data list empty !")

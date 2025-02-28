@@ -1,1 +1,8 @@
-b"e2bgA'AA1AAwBneuOaQShWHmQkOo60cahP40zxDkMpwUaiFZlSrx3QaEHwzdlLzcy3HzfKT5ttd97UOPZ02uSgspZGjv1IfwotzBJyiQrpjNwkhtlTn_QrkLX_qXSHWGXBky_MMyu=AJ'w3TaGC3owas1AbGNU_fxTm1PF-swveqYCP_5z4gb4bTQgO_pwOd3dtgJW9yLC0pJweAY-hPBwkcKQ4dkWw_vjEIjvBTVaecKYE0Re2CaIepPlP4gagzQxC0nGkzM759WNbo5hmZ3sE-CHKCIjNs3yikNOXVhw3TmzfygCIZ8gIrrgAOX"
+{
+  "Snake_01": {
+    "Name": "Blue Woody",
+    "length": 3,
+    "snake_graphics": "graphics/snake_01",
+    "color_encodings": ["blue"]
+  }
+}

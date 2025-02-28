@@ -10,9 +10,6 @@ else:
     paths = ""
 
 from src.Maps.maps import Map
-from src import encryptor
-
-key = encryptor.fetch_key()
 
 class Fruits:
     """Fruits class for random fruits on map"""
@@ -30,9 +27,7 @@ class Fruits:
 
         #Opens file and checks it
         with open(temp_filepath) as file:
-            self.data = file.read()
-        self.data = encryptor.decrypt(self.data, encryptor.fetch_key())
-        self.data = dict(self.data)
+            self.data = json.load(file)
         if self.data=={}:
             raise ValueError("Data File Empty :)")
         if fruit_type in self.data:

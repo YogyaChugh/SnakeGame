@@ -1,1 +1,6 @@
-b"e5bgAAAA'ABnuO1QS6dvwmmwz_eGUMf4a9lfxIh8hZN4m3qqGgOEgJFb06o-OUhR_ovb097E93DZD7g0ph6Naxa8CVcTZuZcZ6rPgxZjQSZ1-9HB6r4IdghRoPzM219l3m0l4mfkPm_Q5P33DDdvs85OUZLfbSZZJ821u4hglbsPl8ZqG5hHO01MrqI6wbbVM3zkW6FFyYOGo0rEDgSUNy1SVphB7fR0TDQRegQS0Uk-L4EYgoq7KaKqHgxtV1X08Ztxy1fnckMVIxB0=g=='"
+{
+  "Fruit_01": {
+    "Name": "Apple Munch",
+    "fruit_graphics": "graphics/fruit_01/fruit.png"
+  }
+}

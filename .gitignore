@@ -1,0 +1,6 @@
+build/
+dist/
+.git/
+.idea/
+Compiling Game.run.xml
+Running_Game.run.xml

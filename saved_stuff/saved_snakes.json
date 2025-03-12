@@ -1,0 +1,8 @@
+{
+  "Snake_01": {
+    "Name": "Blue Woody",
+    "length": 5,
+    "snake_graphics": "assets/snake_01",
+    "color_encodings": ["blue"]
+  }
+}

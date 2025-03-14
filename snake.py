@@ -1,7 +1,7 @@
 """This file consists of the Snake class responsible for creating snake object"""
 
 #Add upper directory path
-import sys,os,math,asyncio,requests
+import sys,os,math,asyncio
 import flet as ft
 bundle_dir = getattr(sys, '_MEIPASS', os.path.abspath(os.path.dirname(__file__)))
 
@@ -36,9 +36,11 @@ class Snake:
             raise ValueError("Should supply a Map object !\n Current Type: ",type(map_for_snake))
         if not isinstance(snake_type,str):
             raise ValueError("File type shared for snake is invalid !\n Current Type: ",type(snake_type))
+        if not os.path.isfile(os.path.abspath(os.path.join(bundle_dir,"saved_snakes.json"))):
+            raise ValueError("Saved snakes file either moved or renamed ! Update Code !")
 
-        with open("saved_snakes.json") as f:
-            data = json.load(f)
+        with open("saved_snakes.json") as file:
+            data = json.load(file)
         data = data[snake_type]
         if data=={}:
             raise ValueError("Snake Data not found ! Data list empty !")
@@ -55,6 +57,7 @@ class Snake:
         self.left = 0
         self.top = 0
         self.size = 0
+        self.moving = True
 
         #Other data
         self.move_allowed = True
@@ -313,6 +316,9 @@ class Snake:
             
             else:
                 img_loc = "body_horizontal.png" if direction in [(1, 0), (-1, 0)] else "body_vertical.png"
+    
+            image_path = os.path.abspath(os.path.join(bundle_dir, img_loc))
+            print(f"Drawing: {img_loc} at {temp}, Path: {image_path}")  # Debugging
     
             temp_image = ft.Image(
                 src=img_loc,

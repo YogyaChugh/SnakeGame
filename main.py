@@ -198,9 +198,8 @@ async def main(page: ft.Page):
         elif event.key == "Arrow Right" and page.session.get("snakes").direction != "LEFT":
             page.session.get("snakes").direction_pt = (1, 0)
             page.session.get("snakes").direction = "RIGHT"
-        elif event.key == "F":
-            await start_snake()
-
+        elif event.key == "Escape":
+            page.close()
     page.on_keyboard_event = on_key
     page.update()
 

@@ -20,14 +20,16 @@ async def update_snake(page):
                 try:
                     if game_over in page.session.get("final_stack").controls:
                         page.session.get("final_stack").controls.remove(game_over)
-                except Exception:
+                except Exception as e:
+                    print(e)
                     pass
                 page.session.get("snakes").move()
                 try:
                     for i in page.session.get("snake_container_images"):
                         if i in page.session.get("final_stack").controls:
                             page.session.get("final_stack").controls.remove(i)
-                except Exception:
+                except Exception as e:
+                    print(e)
                     pass
                 if page.session.get("fruit").location==page.session.get("snakes").locations[0]:
                     page.session.get("final_stack").controls.remove(page.session.get("fruit_image"))
@@ -44,6 +46,7 @@ async def update_snake(page):
                 for i in page.session.get("snake_container_images"):
                     page.session.get("final_stack").controls.append(i)
         except snake.GameOver:
+            print("GAME OVER")
             page.session.get("final_stack").controls.append(game_over)
             for i in page.session.get("snake_container_images"):
                 if i in page.session.get("final_stack").controls:
@@ -51,6 +54,7 @@ async def update_snake(page):
             try:
                 page.session.get("final_stack").controls.remove(page.session.get("fruit_image"))
             except Exception as e:
+                print(e)
                 pass
             page.session.get("snakes").moving = False
             page.update()
@@ -63,119 +67,123 @@ async def update_snake(page):
 
 
 async def main(page: ft.Page):
-    page.session.clear()
-    map_1 = maps.Map("Map_01")
-    snakes = snake.Snake("Snake_01", map_1)
-    fruit_guy = fruits.Fruits("Fruit_01",map_1,snakes)
-    page.session.set("fruit",fruit_guy)
-    page.session.set("map", map_1)
-    page.session.set("snakes", snakes)
-    page.session.set("start", "false")
-    snakes.reset()
-    page.on_close = page.session.clear
-    page.on_disconnect = page.session.clear
-    page.on_error = snakes.reset
-    page.adaptive = True
-    page.on_connect = snakes.reset
-    page.title = "Hi man"
-    page.theme_mode = ft.ThemeMode.LIGHT
-    page.padding = 0
-    page.window.maximizable = False
-    page.window.resizable = False
-    img = ft.Image(
-        src="background.jpeg",
-        expand=True,
-        width=page.width,
-        height=page.height,
-        fit=ft.ImageFit.FILL,
-    )
-    page.session.set("background_image", img)
-
-    def update_stuff(e):
-        page.session.get("background_image").width = page.width
-        page.session.get("background_image").height = page.height
-        page.update()
-
-    page.on_resized = update_stuff
-    map_container = map_1.get_container(page.width, page.height)
-    page.session.set("map_container", map_container)
-    snake_container_images = snakes.draw(
-        page.session.get("map_container")[1],
-        page.session.get("map_container")[2],
-        page.session.get("map_container")[3]
-    )
-    page.session.set("snake_container_images", snake_container_images)
-    page.session.set("snake_prev_images", snake_container_images)
-    final_stack = ft.Stack()
-    page.session.set("final_stack", final_stack)
-
-    async def restart(e):
-        if page.session.get("snakes").first:
+    def recreate(e=None):
+        print("recreated page")
+        page.session.clear()
+        map_1 = maps.Map("Map_01")
+        snakes = snake.Snake("Snake_01", map_1)
+        fruit_guy = fruits.Fruits("Fruit_01",map_1,snakes)
+        page.session.set("fruit",fruit_guy)
+        page.session.set("map", map_1)
+        page.session.set("snakes", snakes)
+        img = ft.Image(
+            src="background.jpeg",
+            expand=True,
+            width=page.width,
+            height=page.height,
+            fit=ft.ImageFit.FILL,
+        )
+        async def start_snake(e=None):
+            page.session.get("snakes").moving = True
             try:
-                for i in page.session.get("snake_prev_images"):
-                    if i in page.session.get("final_stack").controls:
-                        page.session.get("final_stack").controls.remove(i)
-            except Exception:
+                for i in page.session.get("temp_images"):
+                    page.session.get("final_stack").controls.remove(i)
+            except Exception as e:
                 pass
-        page.session.get("final_stack").controls.pop(-1)
-        page.session.get("snakes").reset()
+            page.update()
+            asyncio.create_task(update_snake(page=page))
+
+        
+        async def restart(e):
+            if page.session.get("snakes").first:
+                try:
+                    for i in page.session.get("snake_prev_images"):
+                        if i in page.session.get("final_stack").controls:
+                            page.session.get("final_stack").controls.remove(i)
+                except Exception as e:
+                    print(e)
+                    pass
+            page.session.get("final_stack").controls.pop(-1)
+            page.session.get("snakes").reset()
+            snake_container_images = page.session.get("snakes").draw(
+                page.session.get("map_container")[1],
+                page.session.get("map_container")[2],
+                page.session.get("map_container")[3]
+            )
+            page.session.get("snakes").prev_images = snake_container_images
+            page.session.set("temp_images",snake_container_images)
+            for i in page.session.get("temp_images"):
+                page.session.get("final_stack").controls.append(i)
+            page.session.set("snake_prev_images", snake_container_images)
+            page.session.get("snakes").moving = True
+            page.session.get("snakes").move_allowed = True
+            page.session.get("fruit").randomize()
+            page.session.set("fruit_image",page.session.get("fruit").draw(
+                page.session.get("map_container")[1],
+                page.session.get("map_container")[2],
+                page.session.get("map_container")[3]
+            ))
+            page.session.get("final_stack").controls.append(page.session.get("fruit_image"))
+            page.update()
+
+
+        page.session.set("background_image", img)
+        map_container = page.session.get("map").get_container(page.width, page.height)
+        page.session.set("map_container", map_container)
         snake_container_images = page.session.get("snakes").draw(
             page.session.get("map_container")[1],
             page.session.get("map_container")[2],
             page.session.get("map_container")[3]
         )
-        snakes.prev_images = snake_container_images
-        page.session.set("temp_images",snake_container_images)
-        for i in page.session.get("temp_images"):
-            page.session.get("final_stack").controls.append(i)
+        page.session.set("snake_container_images", snake_container_images)
         page.session.set("snake_prev_images", snake_container_images)
-        page.session.get("snakes").moving = True
-        page.session.get("snakes").move_allowed = True
-        page.session.get("fruit").randomize()
-        page.session.set("fruit_image",page.session.get("fruit").draw(
+        final_stack = ft.Stack()
+        page.session.set("final_stack", final_stack)
+        play_button = ft.ElevatedButton("Play", top=300)
+        restart_button = ft.ElevatedButton("Restart")
+        page.session.set("play_button", play_button)
+        page.session.set("restart_button", restart_button)
+
+        tutorial = ft.AlertDialog(
+            title=ft.Text("Instructions"),
+            content=ft.Text("Use Arrow Keys for navigation :)"),
+            open=True
+        )
+        page.session.get("final_stack").controls.append(page.session.get("background_image"))
+        page.session.get("final_stack").controls.append(page.session.get("map_container")[0])
+        for i in snake_container_images:
+            page.session.get("final_stack").controls.append(i)
+        page.session.get("final_stack").controls.append(restart_button)
+        page.session.get("final_stack").controls.append(tutorial)
+        page.session.get("final_stack").controls.append(play_button)
+        getthefruit= page.session.get("fruit").draw(
             page.session.get("map_container")[1],
             page.session.get("map_container")[2],
             page.session.get("map_container")[3]
-        ))
+        )
+        page.session.set("fruit_image",getthefruit)
         page.session.get("final_stack").controls.append(page.session.get("fruit_image"))
+        page.session.set("start", "false")
+        page.session.get("play_button").on_click = start_snake
+        page.session.get("restart_button").on_click = restart
+    
+        page.add(page.session.get("final_stack"))
         page.update()
-
-    page.session.get("final_stack").controls.append(page.session.get("background_image"))
-
-    async def start_snake(e=None):
-        page.session.get("snakes").moving = True
-        try:
-            for i in page.session.get("temp_images"):
-                page.session.get("final_stack").controls.remove(i)
-        except Exception as e:
-            pass
-        page.update()
-        asyncio.create_task(update_snake(page=page))
-
-    play_button = ft.ElevatedButton("Play", on_click=start_snake, top=300)
-    restart_button = ft.ElevatedButton("Restart", on_click=restart)
-    page.session.set("play_button", play_button)
-    page.session.set("restart_button", restart_button)
-
-    tutorial = ft.AlertDialog(
-        title=ft.Text("Instructions"),
-        content=ft.Text("Use Arrow Keys for navigation :)"),
-        open=True
-    )
-    page.session.get("final_stack").controls.append(page.session.get("map_container")[0])
-    for i in snake_container_images:
-        page.session.get("final_stack").controls.append(i)
-    page.session.get("final_stack").controls.append(restart_button)
-    page.session.get("final_stack").controls.append(tutorial)
-    page.add(final_stack)
-    page.session.get("final_stack").controls.append(play_button)
-    getthefruit= page.session.get("fruit").draw(
-        page.session.get("map_container")[1],
-        page.session.get("map_container")[2],
-        page.session.get("map_container")[3]
-    )
-    page.session.set("fruit_image",getthefruit)
-    page.session.get("final_stack").controls.append(page.session.get("fruit_image"))
+    page.session.clear()
+    async def session_clear(e):
+        page.controls.clear()
+        page.session.clear()
+    page.on_close = session_clear
+    page.on_disconnect = session_clear
+    page.adaptive = True
+    page.on_connect = recreate
+    page.title = "Hi man"
+    page.theme_mode = ft.ThemeMode.LIGHT
+    page.padding = 0
+    page.window.maximizable = False
+    page.window.resizable = False
+    recreate()
+    print(page.session.get("final_stack").controls)
 
     async def on_key(event: ft.KeyboardEvent):
         if event.key == "Arrow Up" and page.session.get("snakes").direction != "DOWN":

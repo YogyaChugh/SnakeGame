@@ -72,7 +72,44 @@ async def main(page: ft.Page):
     if page.platform == ft.PagePlatform.ANDROID:
         page.session.clear()
         page.controls.clear()
-        page.add(ft.Text("NOT BUILT FOR ANDROID/IOS"))
+        page.title = "Platform Alert"
+        page.bgcolor = "#1E1E2E"
+        page.padding = 50
+
+        heading = ft.Text(
+            "Oops! This is not for Android/iOS",
+            size=35,
+            color="white",
+            weight=ft.FontWeight.BOLD,
+            text_align=ft.TextAlign.CENTER,
+        )
+
+        message = ft.Text(
+            "This application is designed for desktops only. Enjoy the full experience on your PC or laptop!",
+            size=18,
+            color="#D0D0D0",
+            text_align=ft.TextAlign.CENTER,
+        )
+
+        card = ft.Container(
+            content=ft.Column([
+                heading,
+                message,
+            ], spacing=10, alignment=ft.MainAxisAlignment.CENTER),
+            padding=30,
+            width=500,
+            border_radius=15,
+            bgcolor="#282A36",
+            shadow=ft.BoxShadow(blur_radius=10, spread_radius=3, color="#5A5A5A"),
+        )
+
+        page.add(
+            ft.Column(
+                [card],
+                alignment=ft.MainAxisAlignment.CENTER,
+                horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            )
+        )
         return
     def recreate(e=None):
         print("recreated page")

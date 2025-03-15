@@ -59,7 +59,7 @@ async def update_snake(page):
             print(g)
             pass
         page.update()
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(0.3)
 
 
 async def main(page: ft.Page):

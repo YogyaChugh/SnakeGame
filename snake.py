@@ -42,6 +42,7 @@ class Snake:
         with open("saved_snakes.json") as file:
             data = json.load(file)
         data = data[snake_type]
+        self.data = data
         if data=={}:
             raise ValueError("Snake Data not found ! Data list empty !")
 
@@ -58,6 +59,8 @@ class Snake:
         self.top = 0
         self.size = 0
         self.moving = True
+        self.done = False
+        self.first = True
 
         #Other data
         self.move_allowed = True
@@ -66,8 +69,26 @@ class Snake:
         self.direction = None
         self.direction_pt = None
         self.keep_track_length = 0
+        self.prev_images = None
 
         self.get_snakepos_random() #Initialize location of snake on map
+
+    def reset(self,e=None):
+        self.locations = []
+        self.direction = None
+        self.direction_pt = None
+        self.keep_track_length = 0
+        self.left = 0
+        self.top = 0
+        self.size = 0
+        self.move_allowed = True
+        self.done = False
+        self.length = self.data["length"]
+        self.name = self.data["Name"]
+        self.graphics_location = self.data["snake_graphics"]
+        self.color_encodings = self.data["color_encodings"]
+
+        self.get_snakepos_random()
 
     @staticmethod
     def fetch_direction(current_location, ftemporary):
@@ -178,7 +199,6 @@ class Snake:
                     temp_direction_pt = directions_dict[temp_direction]
 
     def move(self):
-        print(f"locations:________________________    {self.locations}")
         if not self.images:
             raise ValueError("Can't move snake ! there are no graphics associated !")
         """Moves the snake by 1 position and calls the check() function to verify if it's possible"""
@@ -186,15 +206,12 @@ class Snake:
             return None
         temp = self.locations[0]
         self.locations[0] = add_tuples(self.locations[0],self.direction_pt) #Updates the head position
-        print("PREVIOUS: ",self.locations)
         if self.locations[0][0]!=self.locations[1][0] and self.locations[0][1]!=self.locations[1][1]:
             newer = []
-            print("birather")
             newer.append(self.locations[0])
             newer.append(temp)
             newer.extend(self.locations[1:])
             self.locations = newer
-            print("NEW: ",self.locations)
 
         #When 0th index of last breakpoint and tail are same, update the tail accordingly
         if self.locations[-1][0] == self.locations[-2][0]:
@@ -318,7 +335,6 @@ class Snake:
                 img_loc = "body_horizontal.png" if direction in [(1, 0), (-1, 0)] else "body_vertical.png"
     
             image_path = os.path.abspath(os.path.join(bundle_dir, img_loc))
-            print(f"Drawing: {img_loc} at {temp}, Path: {image_path}")  # Debugging
     
             temp_image = ft.Image(
                 src=img_loc,

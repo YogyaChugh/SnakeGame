@@ -58,7 +58,7 @@ class Snake:
         self.left = 0
         self.top = 0
         self.size = 0
-        self.moving = True
+        self.moving = False
         self.done = False
         self.first = True
 

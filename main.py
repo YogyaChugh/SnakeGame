@@ -49,7 +49,6 @@ async def update_snake(page):
                     page.session.get("final_stack").controls.append(i)
         except snake.GameOver:
             print("GAME OVER")
-            page.session.get("score").content.content.subtitle = ft.Text(str(0))
             page.session.get("final_stack").controls.append(game_over)
             for i in page.session.get("snake_container_images"):
                 if i in page.session.get("final_stack").controls:
@@ -93,6 +92,9 @@ async def main(page: ft.Page):
         )
         
         async def restart(e):
+            if page.session.get("snakes").moving:
+                return
+            page.session.get("score").content.content.subtitle = ft.Text(str(0))
             if page.session.get("snakes").first:
                 try:
                     for i in page.session.get("snake_prev_images"):

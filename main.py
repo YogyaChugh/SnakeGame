@@ -14,7 +14,7 @@ async def update_snake(page):
     )
     game_over = ft.Container(game_over,alignment=ft.alignment.center)
     snake_container_images = []
-    page.session.set("score",0)
+    page.session.get("score").content.content.subtitle = ft.Text(str(0))
     while True:
         try:
             if page.session.get("snakes").moving:
@@ -37,7 +37,7 @@ async def update_snake(page):
                     page.session.get("fruit").randomize()
                     page.session.set("fruit_image",page.session.get("fruit").draw(page.session.get("map_container")[1],page.session.get("map_container")[2],page.session.get("map_container")[3]))
                     page.session.get("final_stack").controls.append(page.session.get("fruit_image"))
-                    page.session.set("score",page.session.get("score")+1)
+                    page.session.get("score").content.content.subtitle = ft.Text(str(int(page.session.get("score").content.content.subtitle.value)+1))
                     page.session.get("snakes").increase_length()
                 snake_container_images = page.session.get("snakes").draw(
                     page.session.get("map_container")[1],
@@ -49,6 +49,7 @@ async def update_snake(page):
                     page.session.get("final_stack").controls.append(i)
         except snake.GameOver:
             print("GAME OVER")
+            page.session.get("score").content.content.subtitle = ft.Text(str(0))
             page.session.get("final_stack").controls.append(game_over)
             for i in page.session.get("snake_container_images"):
                 if i in page.session.get("final_stack").controls:
@@ -158,6 +159,21 @@ async def main(page: ft.Page):
         page.session.get("final_stack").controls.append(page.session.get("fruit_image"))
         page.session.set("start", "false")
         page.session.get("restart_button").on_click = restart
+
+        score = ft.Card(
+            content=ft.Container(
+                content=ft.ListTile(
+                            leading=ft.Icon(ft.Icons.ALBUM),
+                            title=ft.Text("SCORE"),
+                            subtitle=ft.Text(
+                                str(0)
+                            ),
+                        )
+                ),
+                width=300
+            )
+        page.session.set("score",score)
+        page.session.get("final_stack").controls.append(page.session.get("score"))
     
         page.add(page.session.get("final_stack"))
         page.update()

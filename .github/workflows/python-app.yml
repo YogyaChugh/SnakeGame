@@ -40,3 +40,6 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
+    - name: Running Final Game
+      run: |
+        hypercorn main:app --bind 0:0:0:0:8000

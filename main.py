@@ -38,6 +38,7 @@ async def update_snake(page):
                     page.session.set("fruit_image",page.session.get("fruit").draw(page.session.get("map_container")[1],page.session.get("map_container")[2],page.session.get("map_container")[3]))
                     page.session.get("final_stack").controls.append(page.session.get("fruit_image"))
                     page.session.set("score",page.session.get("score")+1)
+                    page.session.get("snakes").increase_length()
                 snake_container_images = page.session.get("snakes").draw(
                     page.session.get("map_container")[1],
                     page.session.get("map_container")[2],

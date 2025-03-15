@@ -73,6 +73,12 @@ class Snake:
 
         self.get_snakepos_random() #Initialize location of snake on map
 
+    def increase_length(self):
+        self.length+=1
+        a = self.get_direction(self.locations[-1],self.locations[-2])
+        b = mul_tuple(a,-1)
+        self.locations[-1] = add_tuples(self.locations[-1],b)
+
     def reset(self,e=None):
         self.locations = []
         self.direction = None

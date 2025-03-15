@@ -69,6 +69,10 @@ async def update_snake(page):
 
 
 async def main(page: ft.Page):
+    if page.platform == ft.PagePlatform.ANDROID:
+        page.session.clear()
+        page.controls.clear()
+        return
     def recreate(e=None):
         print("recreated page")
         page.session.clear()

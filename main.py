@@ -72,6 +72,7 @@ async def main(page: ft.Page):
     if page.platform == ft.PagePlatform.ANDROID:
         page.session.clear()
         page.controls.clear()
+        page.add(ft.Text("NOT BUILT FOR ANDROID/IOS"))
         return
     def recreate(e=None):
         print("recreated page")

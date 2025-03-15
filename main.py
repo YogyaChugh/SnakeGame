@@ -10,8 +10,9 @@ async def update_snake(page):
         "GAME OVER !",
         text_align=ft.TextAlign.CENTER,
         bgcolor=ft.Colors.TEAL_ACCENT_200,
-        top=500
+        size=35
     )
+    game_over = ft.Container(game_over,alignment=ft.alignment.center)
     snake_container_images = []
     page.session.set("score",0)
     while True:
@@ -139,7 +140,7 @@ async def main(page: ft.Page):
         page.session.set("snake_prev_images", snake_container_images)
         final_stack = ft.Stack()
         page.session.set("final_stack", final_stack)
-        play_button = ft.ElevatedButton("Play", top=300)
+        play_button = ft.ElevatedButton("Play")
         restart_button = ft.ElevatedButton("Restart")
         page.session.set("play_button", play_button)
         page.session.set("restart_button", restart_button)
@@ -153,9 +154,9 @@ async def main(page: ft.Page):
         page.session.get("final_stack").controls.append(page.session.get("map_container")[0])
         for i in snake_container_images:
             page.session.get("final_stack").controls.append(i)
-        page.session.get("final_stack").controls.append(restart_button)
         page.session.get("final_stack").controls.append(tutorial)
-        page.session.get("final_stack").controls.append(play_button)
+        page.session.get("final_stack").controls.append(ft.Container(play_button, left=page.width/4, top=100))
+        page.session.get("final_stack").controls.append(ft.Container(restart_button, left=page.width*3/4-60, top=100))
         getthefruit= page.session.get("fruit").draw(
             page.session.get("map_container")[1],
             page.session.get("map_container")[2],
@@ -183,7 +184,6 @@ async def main(page: ft.Page):
     page.window.maximizable = False
     page.window.resizable = False
     recreate()
-    print(page.session.get("final_stack").controls)
 
     async def on_key(event: ft.KeyboardEvent):
         if event.key == "Arrow Up" and page.session.get("snakes").direction != "DOWN":
@@ -198,8 +198,6 @@ async def main(page: ft.Page):
         elif event.key == "Arrow Right" and page.session.get("snakes").direction != "LEFT":
             page.session.get("snakes").direction_pt = (1, 0)
             page.session.get("snakes").direction = "RIGHT"
-        elif event.key == "Escape":
-            page.close()
     page.on_keyboard_event = on_key
     page.update()
 

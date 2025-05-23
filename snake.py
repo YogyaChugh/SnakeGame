@@ -68,7 +68,7 @@ class Snake:
             raise ValueError(
                 "Saved snakes file either moved or renamed ! Update Code !"
             )
-        aa = os.path.join(bundle_dir,"assets/saved_snakes.json")
+        aa = os.path.join(bundle_dir, "assets/saved_snakes.json")
         with open(aa) as file:
             data = json.load(file)
         data = data[snake_type]

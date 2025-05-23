@@ -39,7 +39,8 @@ class Fruits:
                 type(snake_set),
             )
 
-        with open("assets/saved_fruits.json") as file:
+        h = os.path.join(bundle_dir,"assets/saved_fruits.json")
+        with open(h) as file:
             self.data = json.load(file)
         if self.data == {}:
             raise ValueError("Data File Empty :)")

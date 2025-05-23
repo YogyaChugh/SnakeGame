@@ -3,6 +3,8 @@ Multi-player and advanced game taking the basic Nokia snake game ([My Version of
 
 Hosted at https://snakehustle.netlify.app/
 
+![image](https://github.com/user-attachments/assets/40fb7cbe-f492-4cb7-8bc4-8fe45b1e338f)
+
 # Current
 Basic snake game (Windows, Linux & Hosted online) having basic controls, movement, fruit intake, and reset
 

@@ -1,4 +1,5 @@
-from http.server import SimpleHTTPRequestHandler, HTTPServer
+from http.server import HTTPServer, SimpleHTTPRequestHandler
+
 
 class CORSRequestHandler(SimpleHTTPRequestHandler):
     def end_headers(self):
@@ -7,9 +8,9 @@ class CORSRequestHandler(SimpleHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Headers", "Content-Type")
         super().end_headers()
 
+
 PORT = 8000
 server_address = ("", PORT)
 httpd = HTTPServer(server_address, CORSRequestHandler)
 
-print(f"Serving at http://127.0.0.1:{PORT}")
 httpd.serve_forever()

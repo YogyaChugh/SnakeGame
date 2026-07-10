@@ -10,13 +10,14 @@ import os
 import sys
 
 import flet as ft
+import flet_audio as fa
 
 atempboy = os.path.abspath(os.path.dirname(__file__))
 bundle_dir = getattr(sys, "_MEIPASS", atempboy)
 bundle_dir = os.path.abspath(bundle_dir)
 
-audio2 = ft.Audio(os.path.join(bundle_dir, "audio/bonus.wav"), autoplay=True)
-audio1 = ft.Audio(os.path.join(bundle_dir, "audio/lose.wav"), autoplay=True)
+audio2 = fa.Audio(os.path.join(bundle_dir, "audio/bonus.wav"), autoplay=True)
+audio1 = fa.Audio(os.path.join(bundle_dir, "audio/lose.wav"), autoplay=True)
 
 
 def add_tuples(a, b):

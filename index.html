@@ -1,14 +1,139 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/icon" href="/downloads/Logo.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Snake Game</title>
-    <script type="module" crossorigin src="index-D3wMHnLP.js"></script>
-    <link rel="stylesheet" crossorigin href="index-6X3Up7uB.css">
-  </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Snake Hustle: Nokia&#x27;s Snake, taken further · Yogya Chugh</title>
+<meta name="description" content="Snake Hustle is Yogya Chugh&#x27;s take on Nokia&#x27;s Snake, built in Python with Flet: play it in your browser or on Windows and Linux.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://snake.yogya.dev/">
+<meta name="author" content="Yogya Chugh">
+<meta name="theme-color" content="#E8473F">
+<link rel="icon" href="https://yogya.dev/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="512x512" href="https://yogya.dev/favicon.png">
+<link rel="apple-touch-icon" href="https://yogya.dev/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Yogya Chugh">
+<meta property="og:url" content="https://snake.yogya.dev/">
+<meta property="og:title" content="Snake Hustle: Nokia&#x27;s Snake, taken further">
+<meta property="og:description" content="Snake Hustle is Yogya Chugh&#x27;s take on Nokia&#x27;s Snake, built in Python with Flet: play it in your browser or on Windows and Linux.">
+<meta property="og:image" content="https://snake.yogya.dev/page/card.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Snake Hustle, a project by Yogya Chugh">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Snake Hustle: Nokia&#x27;s Snake, taken further">
+<meta name="twitter:description" content="Snake Hustle is Yogya Chugh&#x27;s take on Nokia&#x27;s Snake, built in Python with Flet: play it in your browser or on Windows and Linux.">
+<meta name="twitter:image" content="https://snake.yogya.dev/page/card.jpg">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "WebPage",
+   "@id": "https://snake.yogya.dev/#webpage",
+   "url": "https://snake.yogya.dev/",
+   "name": "Snake Hustle: Nokia's Snake, taken further",
+   "description": "Snake Hustle is Yogya Chugh's take on Nokia's Snake, built in Python with Flet: play it in your browser or on Windows and Linux.",
+   "inLanguage": "en",
+   "isPartOf": {
+    "@type": "WebSite",
+    "@id": "https://yogya.dev/#website",
+    "name": "Yogya Chugh",
+    "url": "https://yogya.dev/"
+   },
+   "about": {
+    "@id": "https://snake.yogya.dev/#app"
+   },
+   "author": {
+    "@id": "https://yogya.dev/#person"
+   },
+   "primaryImageOfPage": "https://snake.yogya.dev/page/card.jpg",
+   "dateModified": "2026-10-04T00:00:00+05:30"
+  },
+  {
+   "@type": "VideoGame",
+   "@id": "https://snake.yogya.dev/#app",
+   "name": "Snake Hustle",
+   "description": "Snake Hustle is Yogya Chugh's take on Nokia's Snake, built in Python with Flet: play it in your browser or on Windows and Linux.",
+   "url": "https://snake.yogya.dev/",
+   "image": "https://snake.yogya.dev/page/card.jpg",
+   "applicationCategory": "GameApplication",
+   "operatingSystem": "Web browser, Windows, Linux",
+   "author": {
+    "@type": "Person",
+    "@id": "https://yogya.dev/#person",
+    "name": "Yogya Chugh",
+    "url": "https://yogya.dev/",
+    "sameAs": [
+     "https://github.com/YogyaChugh",
+     "https://www.linkedin.com/in/yogyachugh"
+    ]
+   },
+   "creator": {
+    "@id": "https://yogya.dev/#person"
+   },
+   "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+   },
+   "sameAs": [
+    "https://github.com/YogyaChugh/SnakeGame"
+   ],
+   "gamePlatform": "Web browser, Windows, Linux"
+  }
+ ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="page/project.css?v=1">
+<script>window.goatcounter = { path: function (p) { return location.host + p; } };</script>
+<script data-goatcounter="https://yogya.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</head>
+<body>
+<main>
+  <section class="page" style="--pr:-.3deg" aria-label="Snake Hustle">
+    <div class="cover-in">
+      <div class="mast">
+        <div>
+          <p class="series">A project by <a href="https://yogya.dev/">Yogya Chugh</a></p>
+          <h1>Snake Hustle</h1>
+          <ul class="chips"><li>Python</li><li>Flet</li><li>Game</li></ul>
+        </div>
+        <a class="home" href="https://yogya.dev/">← yogya.dev</a>
+      </div>
+      <div class="hero">
+        <div>
+          <div class="says"><img src="page/yogya.webp" alt="Yogya Chugh, drawn as a comic character" width="68" height="68"><p class="bub">I&#x27;d already made a basic Snake in Pygame. This is the one where I kept going.</p></div>
+          <p class="lead"><mark>Nokia's Snake</mark>, taken further. Play it in your browser or on your desktop.</p>
+          <div class="ctas"><a class="btn " href="https://snakehustle.netlify.app/">Play in your browser ↗</a><a class="btn white" href="https://github.com/YogyaChugh/SnakeGame"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> Code</a></div>
+        </div>
+        <div class="art" style="--art:#2F5D3A"><img src="page/hero.webp" alt="Snake Hustle screenshot" width="1100" height="590"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" style="--pr:.25deg" aria-labelledby="what-t">
+    <header class="page-title"><h2 id="what-t"><span class="tag">What it does</span>Snake Hustle, in short</h2></header>
+    <div class="feats"><article class="feat"><h3>Classic controls</h3><p>Steer, eat the fruit, grow, and reset when it goes wrong.</p></article><article class="feat"><h3>One codebase</h3><p>Built with Flet, so the same Python runs on the web and the desktop.</p></article><article class="feat"><h3>More to come</h3><p>New maps, snake skins and multiplayer are on the list.</p></article></div>
+  </section>
+
+  <section class="page" style="--pr:.2deg" aria-labelledby="get-t">
+    <header class="page-title"><h2 id="get-t"><span class="tag">Get it</span>Download and run</h2></header>
+    <div class="get"><div class="get-box"><h3>Download</h3><div class="row"><a class="btn " href="https://github.com/YogyaChugh/SnakeGame/releases/latest/download/Snake_Game_Windows.exe">Windows ↓</a><a class="btn white" href="https://github.com/YogyaChugh/SnakeGame/releases/latest/download/Snake_Hustler_Linux">Linux ↓</a></div><p>Version 1.0, from GitHub releases.</p></div></div>
+  </section>
+  <footer class="page credit" style="--pr:-.2deg">
+    <img src="page/yogya.webp" alt="" width="96" height="96">
+    <div>
+      <h2>Made by Yogya Chugh</h2>
+      <p>A software engineer in Delhi who builds things to find out how they work. See all of it, as a comic, at <a href="https://yogya.dev/">yogya.dev</a>.</p>
+      <ul class="others" aria-label="More projects"><li><a href="https://webelo.yogya.dev/">Webelo</a></li><li><a href="https://webber.yogya.dev/">Webber</a></li><li><a href="https://safario.yogya.dev/">Safario</a></li><li><a href="https://votes.yogya.dev/">Vote Leaderboard</a></li><li><a href="https://timberly.yogya.dev/">Timberly</a></li><li><a href="https://island.yogya.dev/">Western Upside-Down Island</a></li></ul>
+    </div>
+  </footer>
+  <p class="foot">© 2026 Yogya Chugh · <a href="https://github.com/YogyaChugh/SnakeGame">Source on GitHub</a></p>
+</main>
+</body>
 </html>
